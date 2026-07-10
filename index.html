@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCAR-F Practice Exam · Claude Certified Architect – Foundations</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#181b24; --panel2:#20242f; --line:#2c313d;
+    --txt:#e7e9ee; --muted:#9aa2b1; --accent:#d97757; --accent2:#c8654a;
+    --ok:#3fb27f; --bad:#e0554e; --warn:#e0a24e; --chip:#262b36;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 80% -10%,#1b2030 0%,var(--bg) 55%);
+    color:var(--txt); line-height:1.5; min-height:100vh;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 80px}
+  h1{font-size:1.7rem;margin:0 0 4px;letter-spacing:-.02em}
+  h2{font-size:1.15rem;margin:0 0 12px}
+  .sub{color:var(--muted);font-size:.92rem}
+  a{color:var(--accent)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:16px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .grid{display:grid;gap:14px}
+  .grid.two{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .pill{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:.78rem;color:var(--muted)}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#1a1206;font-size:1.1rem}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#1a1206;border:none;border-radius:10px;padding:11px 18px;font-size:.95rem;font-weight:700;cursor:pointer;transition:transform .06s,filter .15s}
+  .btn:hover{filter:brightness(1.06)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line);font-weight:600}
+  .btn.ghost:hover{border-color:var(--accent)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .pkg{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);cursor:pointer;transition:border-color .15s,transform .06s;position:relative}
+  .pkg:hover{border-color:var(--accent)}
+  .pkg h3{margin:0 0 6px;font-size:1.02rem}
+  .pkg p{margin:0;color:var(--muted);font-size:.85rem}
+  .pkg .tag{position:absolute;top:14px;right:14px;font-size:.72rem;color:var(--muted)}
+  ul.rules{margin:8px 0 0;padding-left:18px}
+  ul.rules li{margin:5px 0;color:var(--muted);font-size:.9rem}
+  .kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
+  .kv:last-child{border-bottom:none}
+  .kv span:first-child{color:var(--muted)}
+  /* exam */
+  .bar{position:sticky;top:0;z-index:20;background:rgba(15,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin:-28px -20px 18px;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:1.15rem;padding:6px 12px;border-radius:9px;background:var(--chip);border:1px solid var(--line)}
+  .timer.low{color:var(--bad);border-color:var(--bad);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.55}}
+  .progress{flex:1;min-width:160px;height:8px;background:var(--chip);border-radius:99px;overflow:hidden}
+  .progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+  .scenario{font-size:.78rem;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px}
+  .qmeta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .qtext{font-size:1.06rem;font-weight:600;margin-bottom:16px}
+  .opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin:9px 0;cursor:pointer;background:var(--panel2);transition:border-color .12s,background .12s}
+  .opt:hover{border-color:var(--accent)}
+  .opt.sel{border-color:var(--accent);background:rgba(217,119,87,.12)}
+  .opt .mark{flex:0 0 22px;height:22px;border:2px solid var(--muted);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.8rem;margin-top:1px;font-weight:800}
+  .opt.radio .mark{border-radius:50%}
+  .opt.sel .mark{border-color:var(--accent);background:var(--accent);color:#1a1206}
+  .opt .lbl{flex:1;font-size:.95rem}
+  .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .palette{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .pdot{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);font-size:.78rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .pdot.answered{border-color:var(--accent);color:var(--txt);background:rgba(217,119,87,.15)}
+  .pdot.current{outline:2px solid var(--accent);outline-offset:1px}
+  .pdot.flag{box-shadow:inset 0 -4px 0 var(--warn)}
+  /* results */
+  .score-hero{text-align:center;padding:10px 0 6px}
+  .score-num{font-size:3.4rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .verdict{display:inline-block;margin-top:10px;padding:6px 16px;border-radius:999px;font-weight:800;letter-spacing:.03em}
+  .verdict.pass{background:rgba(63,178,127,.16);color:var(--ok);border:1px solid var(--ok)}
+  .verdict.fail{background:rgba(224,85,78,.16);color:var(--bad);border:1px solid var(--bad)}
+  .dom-row{margin:12px 0}
+  .dom-head{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:5px}
+  .dom-bar{height:9px;background:var(--chip);border-radius:99px;overflow:hidden}
+  .dom-bar i{display:block;height:100%;border-radius:99px}
+  .review-q{border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;background:var(--panel2)}
+  .review-q .rq{font-weight:600;margin-bottom:10px}
+  .ro{padding:9px 12px;border-radius:9px;margin:6px 0;font-size:.9rem;border:1px solid transparent}
+  .ro.correct{background:rgba(63,178,127,.13);border-color:var(--ok)}
+  .ro.wrong{background:rgba(224,85,78,.13);border-color:var(--bad)}
+  .ro.neutral{color:var(--muted)}
+  .expl{margin-top:10px;padding:12px;border-left:3px solid var(--accent);background:rgba(217,119,87,.07);border-radius:0 8px 8px 0;font-size:.9rem}
+  .badge{font-size:.72rem;padding:2px 8px;border-radius:6px;background:var(--chip);border:1px solid var(--line);color:var(--muted)}
+  .hidden{display:none}
+  .flagbtn{font-size:.82rem}
+  .center{text-align:center}
+  .foot{color:var(--muted);font-size:.78rem;text-align:center;margin-top:30px;line-height:1.6}
+  @media(max-width:560px){.wrap{padding:20px 14px 60px}.bar{margin:-20px -14px 16px;padding:12px 14px}.score-num{font-size:2.6rem}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script src="questions.js"></script>
+<script src="questions2.js"></script>
+<script src="questions3.js"></script>
+<script src="questions4.js"></script>
+<script src="questions5.js"></script>
+<script>
+/* Practice sets shown on the homepage — each set is one 60-item / 120-min mock exam */
+const SETS = [
+  { id:"set1", name:"Paket Latihan 1", packages: PACKAGES },
+  { id:"set2", name:"Paket Latihan 2", packages: PACKAGES2 },
+  { id:"set3", name:"Paket Latihan 3", packages: PACKAGES3 },
+  { id:"set4", name:"Paket Latihan 4", packages: PACKAGES4 },
+  { id:"set5", name:"Paket Latihan 5", packages: PACKAGES5 }
+];
+</script>
+<script>
+/* ============ Exam config (from CCAR-F Exam Guide v1.0) ============ */
+const CFG = {
+  totalMinutes: 120,          // guide sets 120 min for the full exam; no per-package split
+  cutScaled: 720,             // pass mark on 100–1000 scale
+  scaleMin: 100, scaleMax: 1000
+};
+const state = {
+  set:null, pkg:null, order:[], answers:{}, flags:{}, idx:0,
+  remaining:0, timer:null, startedAt:0, finished:false
+};
+const $ = (h)=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild;};
+const app = document.getElementById('app');
+
+/* ---------- scoring ---------- */
+function isCorrect(q, ans){
+  if(!ans) return false;
+  const a=[...q.a].sort().join(','); const b=[...ans].sort().join(',');
+  return a===b;
+}
+function scaledScore(pct){ // linear map 0..1 -> 100..1000
+  return Math.round(CFG.scaleMin + pct*(CFG.scaleMax-CFG.scaleMin));
+}
+
+/* ============ Screens ============ */
+function home(){ // choose a practice set
+  clearInterval(state.timer);
+  state.set=null;
+  document.title="CCAR-F Practice Exam";
+  app.innerHTML='';
+  app.appendChild($(`<div>
+    <div class="brand">
+      <div class="logo">CC</div>
+      <div>
+        <h1>Claude Certified Architect – Foundations</h1>
+        <div class="sub">CCAR-F · Practice Exam Simulator · based on Exam Guide v1.0 (Jul 2026)</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Pilih paket latihan</h2>
+      <div class="sub" style="margin-bottom:14px">2 practice sets · same exam rules · different questions.</div>
+      <div class="grid two" id="sets"></div>
+    </div>
+    <div class="foot">
+      Blueprint weights — D1 Agentic 27% · D2 Tool/MCP 18% · D3 Claude Code 20% · D4 Prompt/Output 20% · D5 Context/Reliability 15%.<br>
+      Practice simulator. Not affiliated with Anthropic's official Pearson VUE exam.
+    </div>
+  </div>`));
+  const box=document.getElementById('sets');
+  SETS.forEach(s=>{
+    const items=s.packages.reduce((n,p)=>n+p.questions.length,0);
+    const el=$(`<div class="pkg">
+      <span class="tag">${items} items · 120 min</span>
+      <h3>${s.name}</h3>
+    </div>`);
+    el.onclick=()=>packageHome(s);
+    box.appendChild(el);
+  });
+}
+
+// flatten a set's packages into one 60-item exam
+function buildExam(set){
+  const qs=set.packages.flatMap(p=>p.questions);
+  return { id:set.id, name:set.name, questions:qs };
+}
+
+function packageHome(set){ // start screen for the full 60-item exam
+  clearInterval(state.timer);
+  state.set=set;
+  const exam=buildExam(set);
+  const total=exam.questions.length;
+  document.title=set.name+" · CCAR-F";
+  app.innerHTML='';
+  app.appendChild($(`<div>
+    <div class="brand">
+      <div class="logo">CC</div>
+      <div>
+        <h1>Claude Certified Architect – Foundations</h1>
+        <div class="sub">CCAR-F · Practice Exam Simulator · based on Exam Guide v1.0 (Jul 2026)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <h2 style="margin:0">${set.name}</h2>
+        <button class="btn ghost" id="backsets">← All sets</button>
+      </div>
+      <div class="sub" style="margin-top:6px">Full mock exam · ${total} items · 120 minutes.</div>
+    </div>
+    <div class="card">
+      <h2>Exam rules applied in this simulator</h2>
+      <div class="grid two">
+        <div>
+          <div class="kv"><span>Item format</span><b>Multiple-choice &amp; multiple-response</b></div>
+          <div class="kv"><span>Number of items</span><b>${total}</b></div>
+          <div class="kv"><span>Time limit</span><b>120 minutes</b></div>
+          <div class="kv"><span>Scoring</span><b>Scaled 100–1000</b></div>
+        </div>
+        <div>
+          <div class="kv"><span>Passing score</span><b>720</b></div>
+          <div class="kv"><span>Domains reported</span><b>Percent-correct per domain</b></div>
+          <div class="kv"><span>Result</span><b>Pass / Fail</b></div>
+          <div class="kv"><span>Auto-submit</span><b>On timer expiry</b></div>
+        </div>
+      </div>
+      <ul class="rules">
+        <li>Each item states how many responses to select. Multiple-response items are all-or-nothing (no partial credit), per exam scoring.</li>
+        <li>You may navigate freely, flag items for review, and revisit before submitting.</li>
+        <li>Keep your workspace clear — this mirrors the proctored, closed-book exam environment.</li>
+        <li>Exam content here is original practice material grounded in the public Exam Guide; the real exam is confidential (NDA).</li>
+      </ul>
+      <div style="margin-top:18px">
+        <button class="btn" id="start">Start exam · ${total} items · 120:00</button>
+      </div>
+    </div>
+    <div class="foot">
+      Blueprint weights — D1 Agentic 27% · D2 Tool/MCP 18% · D3 Claude Code 20% · D4 Prompt/Output 20% · D5 Context/Reliability 15%.<br>
+      Practice simulator. Not affiliated with Anthropic's official Pearson VUE exam.
+    </div>
+  </div>`));
+  document.getElementById('backsets').onclick=home;
+  document.getElementById('start').onclick=()=>startExam(exam);
+}
+
+function startExam(p){
+  state.pkg=p;
+  state.order=p.questions.map((_,i)=>i);
+  state.answers={}; state.flags={}; state.idx=0; state.finished=false;
+  state.remaining=CFG.totalMinutes*60;
+  state.startedAt=Date.now();
+  clearInterval(state.timer);
+  state.timer=setInterval(tick,1000);
+  renderExam();
+}
+
+function tick(){
+  state.remaining--;
+  const t=document.getElementById('timer');
+  if(t){
+    t.textContent=fmt(state.remaining);
+    t.classList.toggle('low', state.remaining<=120);
+  }
+  if(state.remaining<=0){ clearInterval(state.timer); finish(true); }
+}
+function fmt(s){const m=Math.floor(s/60),ss=s%60;return `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;}
+
+function renderExam(){
+  const p=state.pkg, q=p.questions[state.idx];
+  const multi=q.a.length>1;
+  const answered=Object.keys(state.answers).length;
+  document.title=`Q${state.idx+1}/${p.questions.length} · ${fmt(state.remaining)}`;
+  app.innerHTML='';
+  app.appendChild($(`<div>
+    <div class="bar">
+      <span class="pill">${p.name.split('—')[0].trim()}</span>
+      <div class="progress"><i style="width:${(answered/p.questions.length)*100}%"></i></div>
+      <span class="pill">${answered}/${p.questions.length} answered</span>
+      <span class="timer" id="timer">${fmt(state.remaining)}</span>
+    </div>
+    <div class="card">
+      <div class="scenario">Scenario · ${q.s}</div>
+      <div class="qmeta">
+        <span class="badge">Question ${state.idx+1} of ${p.questions.length}</span>
+        <span class="badge">Domain ${q.d} — ${DOMAINS[q.d]}</span>
+        <span class="badge">${multi?`Select ${q.a.length}`:'Select 1'}</span>
+      </div>
+      <div class="qtext">${q.q}</div>
+      <div id="opts"></div>
+      <div class="navbtns">
+        <button class="btn ghost" id="prev">← Previous</button>
+        <div style="display:flex;gap:10px">
+          <button class="btn ghost flagbtn" id="flag">${state.flags[state.idx]?'★ Flagged':'☆ Flag'}</button>
+          <button class="btn" id="next">${state.idx===p.questions.length-1?'Review & Submit':'Next →'}</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sub" style="margin-bottom:6px">Question navigator</div>
+      <div class="palette" id="palette"></div>
+    </div>
+  </div>`));
+
+  const opts=document.getElementById('opts');
+  q.o.forEach((text,i)=>{
+    const sel=(state.answers[state.idx]||[]).includes(i);
+    const el=$(`<div class="opt ${multi?'':'radio'} ${sel?'sel':''}">
+      <div class="mark">${sel?(multi?'✓':'●'):''}</div>
+      <div class="lbl">${text}</div>
+    </div>`);
+    el.onclick=()=>toggle(i,multi);
+    opts.appendChild(el);
+  });
+
+  const pal=document.getElementById('palette');
+  p.questions.forEach((_,i)=>{
+    const d=$(`<div class="pdot ${state.answers[i]?'answered':''} ${i===state.idx?'current':''} ${state.flags[i]?'flag':''}">${i+1}</div>`);
+    d.onclick=()=>{state.idx=i;renderExam();};
+    pal.appendChild(d);
+  });
+
+  document.getElementById('prev').onclick=()=>{if(state.idx>0){state.idx--;renderExam();}};
+  document.getElementById('prev').disabled=state.idx===0;
+  document.getElementById('flag').onclick=()=>{state.flags[state.idx]=!state.flags[state.idx];renderExam();};
+  document.getElementById('next').onclick=()=>{
+    if(state.idx===p.questions.length-1){reviewScreen();}
+    else{state.idx++;renderExam();}
+  };
+}
+
+function toggle(i,multi){
+  const cur=new Set(state.answers[state.idx]||[]);
+  if(multi){ cur.has(i)?cur.delete(i):cur.add(i); }
+  else{ cur.clear(); cur.add(i); }
+  if(cur.size===0) delete state.answers[state.idx];
+  else state.answers[state.idx]=[...cur];
+  renderExam();
+}
+
+function reviewScreen(){
+  const p=state.pkg;
+  const unanswered=p.questions.map((_,i)=>i).filter(i=>!state.answers[i]);
+  const flagged=Object.keys(state.flags).filter(k=>state.flags[k]).map(Number);
+  app.innerHTML='';
+  app.appendChild($(`<div>
+    <div class="bar">
+      <span class="pill">${p.name.split('—')[0].trim()}</span>
+      <div class="progress"><i style="width:${(Object.keys(state.answers).length/p.questions.length)*100}%"></i></div>
+      <span class="timer ${state.remaining<=120?'low':''}" id="timer">${fmt(state.remaining)}</span>
+    </div>
+    <div class="card">
+      <h2>Review before submitting</h2>
+      <div class="kv"><span>Answered</span><b>${Object.keys(state.answers).length} / ${p.questions.length}</b></div>
+      <div class="kv"><span>Unanswered</span><b style="color:${unanswered.length?'var(--bad)':'var(--ok)'}">${unanswered.length?unanswered.map(i=>i+1).join(', '):'None'}</b></div>
+      <div class="kv"><span>Flagged</span><b>${flagged.length?flagged.map(i=>i+1).join(', '):'None'}</b></div>
+      <div class="palette" id="palette" style="margin-top:14px"></div>
+      <div class="navbtns">
+        <button class="btn ghost" id="back">← Back to questions</button>
+        <button class="btn" id="submit">Submit exam</button>
+      </div>
+      ${unanswered.length?'<div class="sub" style="margin-top:10px;color:var(--warn)">You have unanswered items. Unanswered items are scored as incorrect.</div>':''}
+    </div>
+  </div>`));
+  const pal=document.getElementById('palette');
+  p.questions.forEach((_,i)=>{
+    const d=$(`<div class="pdot ${state.answers[i]?'answered':''} ${state.flags[i]?'flag':''}">${i+1}</div>`);
+    d.onclick=()=>{state.idx=i;renderExam();};
+    pal.appendChild(d);
+  });
+  document.getElementById('back').onclick=()=>{state.idx=p.questions.length-1;renderExam();};
+  document.getElementById('submit').onclick=()=>{
+    if(confirm('Submit exam and see your score report? You cannot change answers after submitting.')) finish(false);
+  };
+}
+
+function finish(expired){
+  clearInterval(state.timer);
+  state.finished=true;
+  const p=state.pkg;
+  let correct=0;
+  const domStat={}; for(let d=1;d<=5;d++) domStat[d]={c:0,t:0};
+  p.questions.forEach((q,i)=>{
+    domStat[q.d].t++;
+    if(isCorrect(q,state.answers[i])){correct++;domStat[q.d].c++;}
+  });
+  const total=p.questions.length;
+  const pct=correct/total;
+  const scaled=scaledScore(pct);
+  const pass=scaled>=CFG.cutScaled;
+  const elapsed=Math.round((Date.now()-state.startedAt)/1000);
+
+  document.title=`${pass?'PASS':'FAIL'} · ${scaled} · CCAR-F`;
+  app.innerHTML='';
+  const domRows=Object.keys(domStat).map(d=>{
+    const s=domStat[d]; const dp=s.t?Math.round(s.c/s.t*100):0;
+    const col=dp>=70?'var(--ok)':dp>=50?'var(--warn)':'var(--bad)';
+    return `<div class="dom-row">
+      <div class="dom-head"><span>D${d} · ${DOMAINS[d]} <span class="sub">(${DOMAIN_WEIGHT[d]}%)</span></span><b>${s.c}/${s.t} · ${dp}%</b></div>
+      <div class="dom-bar"><i style="width:${dp}%;background:${col}"></i></div>
+    </div>`;
+  }).join('');
+
+  app.appendChild($(`<div>
+    <div class="card">
+      <div class="score-hero">
+        <div class="sub">Scaled score (100–1000 · pass ≥ ${CFG.cutScaled})</div>
+        <div class="score-num" style="color:${pass?'var(--ok)':'var(--bad)'}">${scaled}</div>
+        <div><span class="verdict ${pass?'pass':'fail'}">${pass?'PASS':'FAIL'}</span></div>
+        <div class="sub" style="margin-top:12px">${correct} / ${total} correct (${Math.round(pct*100)}%) · Time used ${fmt(elapsed)}${expired?' · ⏱ auto-submitted on expiry':''}</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Percent-correct by domain</h2>
+      <div class="sub" style="margin-bottom:10px">Section percentages are informational — the real exam determines pass/fail from total scaled score only.</div>
+      ${domRows}
+    </div>
+    <div class="card">
+      <div class="navbtns">
+        <button class="btn ghost" id="home">← Packages</button>
+        <button class="btn" id="retry">Retake this package</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Answer review &amp; explanations</h2>
+      <div id="review"></div>
+    </div>
+  </div>`));
+
+  const rev=document.getElementById('review');
+  p.questions.forEach((q,i)=>{
+    const ans=state.answers[i]||[];
+    const ok=isCorrect(q,ans);
+    const optHtml=q.o.map((t,oi)=>{
+      const isC=q.a.includes(oi), picked=ans.includes(oi);
+      let cls='neutral', tag='';
+      if(isC){cls='correct';tag=' ✓ correct';}
+      if(picked&&!isC){cls='wrong';tag=' ✗ your choice';}
+      if(picked&&isC){tag=' ✓ your choice';}
+      return `<div class="ro ${cls}">${t}<span class="sub">${tag}</span></div>`;
+    }).join('');
+    rev.appendChild($(`<div class="review-q">
+      <div class="qmeta">
+        <span class="badge" style="border-color:${ok?'var(--ok)':'var(--bad)'};color:${ok?'var(--ok)':'var(--bad)'}">${ok?'Correct':(ans.length?'Incorrect':'Unanswered')}</span>
+        <span class="badge">D${q.d}</span>
+        <span class="badge">${q.a.length>1?`Select ${q.a.length}`:'Select 1'}</span>
+      </div>
+      <div class="rq">${i+1}. ${q.q}</div>
+      ${optHtml}
+      <div class="expl"><b>Why:</b> ${q.e}</div>
+    </div>`));
+  });
+  document.getElementById('home').onclick=()=>packageHome(state.set);
+  document.getElementById('retry').onclick=()=>startExam(p);
+  window.scrollTo(0,0);
+}
+
+home();
+</script>
+</body>
+</html>
